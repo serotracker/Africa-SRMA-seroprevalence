@@ -1,0 +1,52 @@
+---
+title: ''
+output:
+  word_document: default
+  pdf_document: default
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = FALSE, warning = FALSE, message = FALSE)
+```
+
+```{r}
+library(tidyverse)
+# set pander table-layout options
+library(pander)
+panderOptions('table.alignment.default', function(df)
+    ifelse(sapply(df, is.numeric), 'right', 'left'))
+panderOptions('table.split.table', Inf)
+panderOptions('big.mark', "")
+panderOptions('keep.trailing.zeros', TRUE)
+```
+
+```{r}
+health_index <- read.csv("data/tables/health_index.csv") %>%
+  janitor::clean_names() %>%
+  mutate(country_iso3=countrycode::countrycode(country, origin='country.name',destination='iso3c')) %>%
+  select(-country)
+
+unadj_ratios <- dataset2 %>% filter(!(sampling_mid_qtr %in% c("2020 Q1","2020 Q2","2020 Q3"))) %>%
+  left_join(health_index) %>%
+  mutate(sero_case_ratio=round(serum_pos_prevalence/(total_cases_per_hundred9/100), 0))
+
+
+adj_ratios <- dataset2 %>% filter(!(sampling_mid_qtr %in% c("2020 Q1","2020 Q2","2020 Q3"))) %>%
+  left_join(health_index) %>%
+  left_join(dataset1_adj) %>%
+  #mutate(serum_pos_prevalence=if_else(!is.na(adj_prevalence),adj_prevalence,serum_pos_prevalence)) %>%
+  mutate(sero_case_ratio=round(serum_pos_prevalence/(total_cases_per_hundred9/100), 0))
+
+unadj_ratios %>%
+  group_by(subregion, country) %>%
+  summarise(n=n(),min=min(sero_case_ratio), max=max(sero_case_ratio), median=median(sero_case_ratio),p25=quantile(sero_case_ratio, probs=0.25), p75=quantile(sero_case_ratio, probs=0.75), access=mean(access), quality=mean(quality),
+            demand=mean(demand), resilience=mean(resilience)) %>%
+  mutate(ratio=str_glue("{min}:1-{max}:1")) %>%
+  select("n"=n,"Country"=country, "Ascertainment ratio"=ratio) %>%
+  pander()
+
+cor.test(unadj_ratios$sero_case_ratio, unadj_ratios$access)
+cor.test(unadj_ratios$sero_case_ratio, unadj_ratios$quality)
+cor.test(unadj_ratios$sero_case_ratio, unadj_ratios$demand)
+cor.test(unadj_ratios$sero_case_ratio, unadj_ratios$resilience)
+```
