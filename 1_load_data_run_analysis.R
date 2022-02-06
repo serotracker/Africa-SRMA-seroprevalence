@@ -45,9 +45,9 @@ p4<-time_plot_function("Western Africa",dataset="sero_nat_pred2")
 max_cases<-0.05
 p3<-time_plot_function("Southern Africa",dataset="sero_nat_pred2")
 p2<-time_plot_function("Middle Africa",dataset="sero_nat_pred2")
-pdf("figures/Figure 3_un.pdf",height=6.5,width=10.5)
+pdf("figures/Figure 3.pdf",height=6.5,width=10.5)
 plot_grid(p1, p3, p4, p2, ncol=2, nrow=2)
-ggsave("figures/Figure 3_un.png",height=6.5,width=10.5)
+ggsave("figures/Figure 3.png",height=6.5,width=10.5)
 
 dev.off()
 
@@ -56,14 +56,14 @@ source(glue::glue(script_path,"meta_regression.R"))
 #source(glue::glue(script_path,"subgroup_analysis.R"))
 source(glue::glue(script_path,"figure s2.R"))
 
-pdf("figures/Figure 4_un.pdf",width=7,height=8)
+pdf("figures/Figure 4.pdf",width=7,height=8)
 plot_grid(#subgroup_analysis, 
           meta_reg, nrow=2, rel_heights=c(0.9,1.1))
-ggsave("figures/Figure 4_un.png",width=7,height=6)
+ggsave("figures/Figure 4.png",width=7,height=6)
 dev.off()
 
-# pdf("figures/Figure S2_un.pdf", height=2.5,width=8)
+# pdf("figures/Figure S2.pdf", height=2.5,width=8)
 # plot_grid(age_plot,sex_plot,ncol=2,align='h')
-# ggsave("figures/Figure S2_un.png")
+# ggsave("figures/Figure S2.png")
 # dev.off()
 
