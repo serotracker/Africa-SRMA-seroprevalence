@@ -62,8 +62,8 @@ plot_grid(#subgroup_analysis,
 ggsave("figures/Figure 4.png",width=7,height=6)
 dev.off()
 
-# pdf("figures/Figure S2.pdf", height=2.5,width=8)
+# pdf("figures/Figure S3.pdf", height=2.5,width=8)
 # plot_grid(age_plot,sex_plot,ncol=2,align='h')
-# ggsave("figures/Figure S2.png")
+# ggsave("figures/Figure S3.png")
 # dev.off()
 
