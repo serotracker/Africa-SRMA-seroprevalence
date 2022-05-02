@@ -21,7 +21,7 @@ metan <- function(event, n, studlab) {
 
 # empty dataframe to save results from meta-analysis
 res<-data.frame(subregion=character(),
-                                  date=as.Date(character(0)),
+                                  date=character(0),
                                   k=double(),
                                   prop=double(),
                                   se=double(),
@@ -36,14 +36,14 @@ print(j)
   r <- sero %>% filter(subregion == j) %>% select(who_region) %>% distinct() %>% pull()
   data_region <- sero %>% filter(who_region == r)
   data_reg_or_nat <- sero %>% filter(subregion == j)
-  date <- as.Date(c('2020-05-17','2020-08-16','2020-11-15', '2021-02-14','2021-05-16','2021-08-15'))
+  date <- c("2020 Q2", "2020 Q3","2020 Q4","2021 Q1","2021 Q2","2021 Q3")
     # seq(min(data_region %>% select(date_var) %>% pull()),
     #           max(data_region %>% select(date_var) %>% pull()), 
     #           28)
   # Loop over dates and run random-effects meta-analysis
   for(i in 1:length(date)){
       
-    data_for_metan <- data_reg_or_nat[data_reg_or_nat[[date_var]]>= date[i]-45 & data_reg_or_nat[[date_var]]<= date[i]+45,]
+    data_for_metan <- data_reg_or_nat[data_reg_or_nat[[date_var]]==date[i],]
     data_for_metan <- data_for_metan %>%
                       #filter(if (n_distinct(estimate_grade) > 1) 
                       #estimate_grade=="National" else estimate_grade %in% c("Subnational", "National")) %>%

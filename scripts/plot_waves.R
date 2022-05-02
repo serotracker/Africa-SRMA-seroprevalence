@@ -39,10 +39,10 @@ plot_waves <- function(r){
     ggplot(who_sero_data%>%filter(country_iso3==c, panel=="c"))+
     geom_line(aes(as.Date(date), total_cases_per_hundred))+
     #geom_line(aes(as.Date(date), people_vaccinated_per_hundred14/10), col="#A65628")+
-    scale_y_continuous(name="Cum. incidence (%)",expand = expansion(mult = c(0, 0.1)), limits = c(0,5))+
+    scale_y_continuous(name="Cum. incidence (%)",expand = expansion(mult = c(0, 0.1)), limits = c(0,6))+
   #,sec.axis = sec_axis(~.*10, name="Vaccination (%)"))+
     scale_x_date(date_breaks = "3 months",date_labels = "%b %y", expand = expansion(mult = c(0, 0)),
-                 limits=c(as.Date("2020-03-01"), as.Date("2021-10-01")))+
+                 limits=c(as.Date("2020-03-01"), as.Date("2022-01-01")))+
     labs(title=NULL, x=NULL)+
     theme_bw()+
     theme(legend.position = "none",
@@ -89,7 +89,7 @@ plot_waves <- function(r){
   max_prop <- as.numeric(who_sero_data%>%filter(subregion==r)%>%summarise(max(serum_pos_prevalence,na.rm=T)))*100
   
   sero_plots[[c]]<-
-    ggplot(who_sero_data%>%filter(country_iso3==c, panel=="b")%>%mutate(first_author=str_glue("{first_author} et al.")))+
+    ggplot(who_sero_data%>%filter(country_iso3==c, panel=="b")%>%mutate(first_author=str_glue("{str_to_title(first_author)} et al.")))+
     geom_point(aes(as.Date(date), serum_pos_prevalence*100, fill = estimate_grade, shape=first_author), size = 2)+
     #geom_linerange(aes(as.Date(date), ymin=seroprev_95_ci_lower*100, ymax=seroprev_95_ci_upper*100), col='black') +
     geom_rect(aes(xmin = sampling_start_date, xmax = sampling_end_date, ymin = 0, ymax = Inf, fill = estimate_grade), 
@@ -99,7 +99,7 @@ plot_waves <- function(r){
     #              label=label), vjust=-1)+
     scale_y_continuous(name="Seroprev (%)", expand = expansion(mult = c(0, 0.1)), limits=c(0, max_prop))+
     scale_x_date(date_breaks = "3 months",date_labels = "%b %y", expand = expansion(mult = c(0, 0)),
-                 limits=c(as.Date("2020-03-01"), as.Date("2021-10-01")))+
+                 limits=c(as.Date("2020-03-01"), as.Date("2022-01-01")))+
     scale_fill_manual(name="", labels=c("Capital","Local","Sub-ntnl", "Ntnl"),
                       breaks=c("Capital","Local","Subnational", "National"), values=c("#FF7F00", "#FFFF33", "#E41A1C", "#377EB8"))+
     scale_shape_manual(name="",values=c(21,22,23,24,25,1)) +
@@ -127,7 +127,7 @@ plot_waves <- function(r){
     ungroup()
   
   plots[[c]] <- plot_grid(gisaid_plots[[c]],sero_plots[[c]],death_plots[[c]], nrow=3,
-                          align='v',rel_heights=c(1,1.1,0.9))
+                          align='v',rel_heights=c(1,1.1,0.8))
   }
 
   }

@@ -50,7 +50,15 @@ plot_waves("Middle Africa")
 ```
 
 ```{r}
-pdf("figures/Figure 2.pdf",height=4,width=8)
+pdf("figures/Figure 2_all.pdf",height=4,width=10)
+plot_waves("Eastern Africa")
+plot_waves("Southern Africa")
+plot_waves("Western Africa")
+plot_waves("Middle Africa")
+
+dev.off()
+
+pdf("figures/Figure 2_selected.pdf",height=4,width=10)
 who_sero_data <- who_sero_data %>%
   mutate(subregion=if_else(country %in% c("Kenya", "Malawi"),
                            "Selected Countries 1", subregion))

@@ -20,7 +20,6 @@ sero_nat <- sero_complete
 
 # seroprevalence adjustment
 sero_inf <- sero_nat %>% 
-  filter(estimate_grade=="National")%>%
   group_by(study_name) %>%
   mutate(serum_pos_prevalence = max((serum_pos_prevalence-adults_vaccinated_per_hundred14/100)/
                                     (1-adults_vaccinated_per_hundred14/100),

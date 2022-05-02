@@ -26,15 +26,9 @@ health_index <- read.csv("data/tables/health_index.csv") %>%
   mutate(country_iso3=countrycode::countrycode(country, origin='country.name',destination='iso3c')) %>%
   select(-country)
 
-unadj_ratios <- dataset2 %>% filter(!(sampling_mid_qtr %in% c("2020 Q1","2020 Q2","2020 Q3"))) %>%
+unadj_ratios <- sero_inf %>% filter(study_name %in% dataset2$study_name) %>%
+  filter(!(sampling_mid_qtr %in% c("2020 Q1","2020 Q2","2020 Q3"))) %>%
   left_join(health_index) %>%
-  mutate(sero_case_ratio=round(serum_pos_prevalence/(total_cases_per_hundred9/100), 0))
-
-
-adj_ratios <- dataset2 %>% filter(!(sampling_mid_qtr %in% c("2020 Q1","2020 Q2","2020 Q3"))) %>%
-  left_join(health_index) %>%
-  left_join(dataset1_adj) %>%
-  #mutate(serum_pos_prevalence=if_else(!is.na(adj_prevalence),adj_prevalence,serum_pos_prevalence)) %>%
   mutate(sero_case_ratio=round(serum_pos_prevalence/(total_cases_per_hundred9/100), 0))
 
 unadj_ratios %>%

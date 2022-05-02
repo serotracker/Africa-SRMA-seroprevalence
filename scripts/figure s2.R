@@ -16,7 +16,7 @@ symptoms%>%
   pander()
 
 symptoms_age <- age_sex_data %>%
-  filter(source_type=="Unity submission", 
+  filter(source_type=="Early results from UNITY study collaborators", 
          !is.na(symptoms_numerator_value),!is.na(age_analysis_category)) %>%
   mutate(meta_numerator = as.integer(numerator_value))%>%
   filter(meta_numerator>5) %>%
@@ -29,7 +29,7 @@ symptoms_age <- age_sex_data %>%
          meta_prev_group2 = meta_numerator_group2/meta_denominator_group2)
 
 symptoms_sex <- age_sex_data %>%
-  filter(source_type=="Unity submission",
+  filter(source_type=="Early results from UNITY study collaborators",
          !is.na(symptoms_numerator_value),!is.na(sex_specific_category)) %>%
   mutate(meta_numerator = as.integer(numerator_value))%>%
   filter(meta_numerator>5) %>%

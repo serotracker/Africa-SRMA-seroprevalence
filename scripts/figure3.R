@@ -16,8 +16,62 @@ library(mgcv)
 
 script_path = "scripts/"
 fig_path = "figures/"
+data_path = "data/"
 
-date_var="week"
+# continent-wide cases and population
+
+population_counts <- readRDS("data/pop/population_counts.rds")
+cases_africa <- who_dths_cases %>%
+  filter(who_region=="Africa" | 
+           country_iso3 %in% c("DZA","EGY","LBY","MAR","SDN","TUN","SOM"))%>%
+  group_by(date) %>%
+  summarise(total_cases=sum(total_cases), total_deaths=sum(total_deaths)) %>%
+  mutate(date = as.character(zoo::as.yearqtr(date))) %>%
+  group_by(date) %>%
+  summarise(total_cases=last(total_cases), total_deaths=last(total_deaths)) %>%
+  mutate(total=sum(population_counts$total))
+
+# continent-wide seroprevalence
+
+metan_nat <- sero_nat %>% arrange(sampling_mid_qtr) %>%
+  metaprop(event = numerator_value, n = denominator_value, studlab = study_name, subgroup=sampling_mid_qtr)
+metan_inf <- sero_inf %>% arrange(sampling_mid_qtr) %>%
+  metaprop(event = numerator_value, n = denominator_value, studlab = study_name, subgroup=sampling_mid_qtr)
+metan_africa <- rbind(data.frame(model = "sero_nat",
+                        subregion = "Africa",
+                        date = c("2020 Q1", "2020 Q2", "2020 Q3", "2020 Q4",
+                                 "2021 Q1", "2021 Q2", "2021 Q3"),
+                        k = metan_nat$k.w,
+                        # apply logit transformation to proportion
+                        prop = plogis(metan_nat$TE.random.w),
+                        # se on logit scale
+                        se = metan_nat$seTE.random.w,
+                        seP=metan_nat$seTE.predict.w,
+                        I2=metan_nat$I2.w,
+                        ci_l=plogis(metan_nat$lower.random.w),
+                        ci_u=plogis(metan_nat$upper.random.w)),
+             data.frame(model = "sero_inf",
+                        subregion = "Africa",
+                        date = c("2020 Q1", "2020 Q2", "2020 Q3", "2020 Q4",
+                                 "2021 Q1", "2021 Q2", "2021 Q3"),
+                        k = metan_inf$k.w,
+                        # apply logit transformation to proportion
+                        prop = plogis(metan_inf$TE.random.w),
+                        # se on logit scale
+                        se = metan_inf$seTE.random.w,
+                        seP=metan_inf$seTE.predict.w,
+                        I2=metan_inf$I2.w,
+                        ci_l=plogis(metan_inf$lower.random.w),
+                        ci_u=plogis(metan_inf$upper.random.w))
+) %>%
+  left_join(cases_africa) %>%
+  mutate(sero_case_ratio = total * prop / total_cases,
+         sero_case_ratio_l = total * ci_l / total_cases,
+         sero_case_ratio_u = total * ci_u / total_cases)
+
+# sub-regional seroprevalence
+
+date_var="sampling_mid_qtr"
 random_est_nat <- meta_analysis(sero=sero_nat,model="sero_nat",window_span=28,date_var=date_var)
 random_est_adj <- meta_analysis(sero=sero_adj,model="sero_adj",window_span=28,date_var=date_var)
 random_est_inf <- meta_analysis(sero=sero_inf,model="sero_inf",window_span=28, date_var=date_var)

@@ -186,7 +186,7 @@ metan_forestplot <- function(subgroup,limits,ylab) {
       xlab('') +
       ylab(ylab) +
       ggtitle(str_glue("Subgroups: {subgroup}"))+
-      coord_flip(ylim = c(0.5, 1.25),xlim=limits) + 
+      coord_flip(ylim = c(0.4, 1.1),xlim=limits) + 
       geom_vline(xintercept=seq(min(subgroup_input$row)+0.5,max(subgroup_input$row)-0.5,1))+
       theme_bw()+
       theme(axis.ticks.x=element_blank(), panel.grid.major = element_blank(), panel.grid.minor = element_blank(),plot.title=element_text(size=10))

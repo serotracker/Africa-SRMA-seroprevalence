@@ -8,10 +8,10 @@ return(
   scale_y_continuous(name="VOC (%, shaded)", expand = expansion(mult = c(0, 0)), 
                      sec.axis = sec_axis(~./(100*multiplier), name="New cases/mil"))+
   scale_x_date(date_breaks = "3 months",date_labels = "%b %y", expand = expansion(mult = c(0, 0)), 
-               limits=c(as.Date("2020-03-01"), as.Date("2021-10-01")))+
+               limits=c(as.Date("2020-03-01"), as.Date("2022-01-01")))+
   labs(title=str_wrap(str_glue("{country}"), 32), x=NULL, y=NULL)+
   theme_bw()+
-  scale_fill_manual(name="",values=c("#4DAF4A","#984EA3","#F781BF", "#999999"))+
+  scale_fill_manual(name="",values=c("#4DAF4A","#984EA3","#F781BF","#A65628", "#999999"))+
   theme(legend.position = "bottom",
         panel.grid.major = element_blank(),
         panel.grid.minor = element_blank(),
